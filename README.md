@@ -24,7 +24,7 @@ The dashboard uses the GitHub Dataset available on Kaggle.
 
 ## Created By
 
-[Your Name]
+Amariah Kamau
 
 ## Last Updated
 
