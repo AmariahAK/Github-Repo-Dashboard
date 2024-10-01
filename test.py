@@ -3,7 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
-import dask.dataframe as dd
+import requests
+import io
 
 # Set page configuration
 st.set_page_config(
@@ -26,23 +27,13 @@ st.markdown("""
 # Load the data
 @st.cache_data(ttl=3600)
 def load_data():
-    try:
-        data = pd.read_csv("archive/github_dataset.csv")
-        data['stars_count'] = pd.to_numeric(data['stars_count'], errors='coerce').fillna(0).astype(int)
-        return data
-    except FileNotFoundError:
-        st.error("Data file not found. Please check the file path.")
-        return None
-    except pd.errors.EmptyDataError:
-        st.error("The data file is empty.")
-        return None
-    except Exception as e:
-        st.error(f"An error occurred while loading the data: {str(e)}")
-        return None
+    url = "https://github.com/AmariahAK/Github-Repo-Dashboard/releases/download/v1.0.0/github_dataset.csv"
+    response = requests.get(url)
+    data = pd.read_csv(io.StringIO(response.content.decode('utf-8')))
+    data['stars_count'] = pd.to_numeric(data['stars_count'], errors='coerce').fillna(0).astype(int)
+    return data
 
 data = load_data()
-if data is None:
-    st.stop()
 
 # Sidebar for navigation
 st.sidebar.title("Navigation")
@@ -141,12 +132,10 @@ elif page == "Language Trends":
 
     # Language Distribution (Treemap)
     st.header("Language Distribution (Treemap)")
-    # Filter out null or empty language values
     treemap_data = filtered_data[filtered_data['language'].notna() & (filtered_data['language'] != '')]
     fig = px.treemap(treemap_data, path=['language'], values='stars_count', 
                      title="Distribution of Languages by Star Count")
     st.plotly_chart(fig)
-
 
 else:  # About page
     st.title("About This Dashboard")
@@ -154,8 +143,8 @@ else:  # About page
     This dashboard provides insights into GitHub repository data. It showcases various aspects of repositories including popularity, size, and programming language trends.
 
     Data source: GitHub Dataset (available on Kaggle)
-    Created by: Amariah Kamau
-    Last updated: 01/10/2024
+    Created by: [Your Name]
+    Last updated: [Date]
 
     The dashboard includes features such as:
     - Basic statistics and top repositories
@@ -164,5 +153,5 @@ else:  # About page
     - Advanced filtering options
     - Correlation analysis between different metrics
 
-    For any questions or feedback, please contact +254720151950 or amariah.abish@gmail.com
+    For any questions or feedback, please contact [Your Contact Information].
     """)
