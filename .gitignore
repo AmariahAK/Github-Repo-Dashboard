@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+
+
+# Streamlit
+.streamlit/
+
+# OS files
+.DS_Store
+
+# Data files (if you don't want to include them in version control)
+*.csv
